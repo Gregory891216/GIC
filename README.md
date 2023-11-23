@@ -1,1 +1,2 @@
-# GIC
+install coverage
+install pytest
