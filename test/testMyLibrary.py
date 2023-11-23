@@ -113,10 +113,9 @@ def testGetUserWhoBorrowedTheMost():
 
 @pytest.mark.createIndexOnBooksPublicationYear
 def testCreateIndexOnBooksPublicationYear():
-    with pytest.raises(Exception) as e:
-        ml = MyLibrary("myDB")
-        ml.createIndexOnBooksPublicationYear()
-        print(e)
+    ml = MyLibrary("myDB")
+    value = ml.createIndexOnBooksPublicationYear()
+    assert value == "Done"
 
 @pytest.mark.getBooksAt2020IsNotBorrowed
 def testGetBooksAt2020IsNotBorrowed():

@@ -2,14 +2,17 @@ import mysql.connector
 
 class MyLibrary:
     def __init__(self, db_name=None):
-        self.__hello = "hello world"
-        self.__config = {"user":"root", "password":"SO7vkkillgw", "host":"localhost", "database":db_name}
+        self.__config = {"user":"root", "password":"", "host":"localhost", "database":db_name}
         self.__conn = mysql.connector.connect(**self.__config)
 
-    def printStuff(self):
-        return self.__hello
-
     def createDatabase(self):
+        '''
+        Create a table with an sql statement
+        Parameters:
+            None
+        Returns:
+            database (str) : Schema of the table that has been created
+        '''
         try:
             with self.__conn.cursor() as cursor:
 
@@ -27,6 +30,14 @@ class MyLibrary:
         return database_list[0][0]
 
     def createTable(self, table_name, sql):
+        '''
+        Create a table with an sql statement
+        Parameters:
+            table_name (str): name of the table to be created
+            sql_values (str): sql string to create the table 
+        Returns:
+            table (str) : Schema of the table that has been created
+        '''
         try:
             with self.__conn.cursor() as cursor:          
                 cursor.execute(sql)
@@ -43,9 +54,11 @@ class MyLibrary:
     def initData(self, table_name,  sql_values):
         '''
         Init a table with an sql statement
-
-        return:
-        total rows
+        Parameters:
+            table_name (str): name of the table initialize with data
+            sql_values (str): data for the table 
+        Returns:
+            total_rows (number) : total rows added to the table
         '''
         total_rows = 0
         sql = f'INSERT INTO `{table_name}` (`book_id`, `title`, `author`, `publication_year`, `isbn`) VALUES ' + sql_values
@@ -70,8 +83,10 @@ class MyLibrary:
         '''
         Get top ten of most borrowed book
 
-        Returns:
-            borrowed_book_list (list): returns a list of book data containg book ID , title, and times borrowed
+            Parameters:
+                None
+            Returns:
+                borrowed_book_list (list): returns a list of book data containg book ID , title, and times borrowed
         '''
         result = []
 
@@ -106,14 +121,7 @@ class MyLibrary:
                 user_details (list): a list of user data containing user ID, firstname, lastname, registration date
                                      and times borrowed
         '''
-        # sql = '''
-        #     SELECT u.user_id, u.first_name, u.last_name, u.email, u.registration_date, bb.times_borrowed
-        #     FROM users u
-        #     INNER JOIN 
-        #     (SELECT user_id, count(user_id) AS times_borrowed FROM borrowed_books GROUP BY user_id) bb
-        #     ON u.user_id = bb.user_id
-        #     ORDER BY bb.times_borrowed DESC LIMIT 10;
-        # '''
+
         sql='''
         WITH times_borrowed AS(
             SELECT u.user_id, u.first_name, u.last_name, u.email, u.registration_date, bb.times_borrowed,
@@ -142,6 +150,11 @@ class MyLibrary:
     def createIndexOnBooksPublicationYear(self):
         '''
         Create index at publication year column of books
+            Parameters:
+                None
+            
+            Returns:
+                None
         '''
         sql = "CREATE INDEX publication_year_index ON books(publication_year);"
         try:
@@ -157,7 +170,8 @@ class MyLibrary:
     def getBooksAt2020IsNotBorrowed(self):
         '''
         Search for books that are published in 2020 and is not borrowed by any user
-        
+            Parameters:
+                None
             Returns:
                 result (list): A list of dictionary with book data containing book ID and title
         '''
