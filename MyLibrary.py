@@ -47,6 +47,7 @@ class MyLibrary:
         return:
         total rows
         '''
+        total_rows = 0
         sql = f'INSERT INTO `{table_name}` (`book_id`, `title`, `author`, `publication_year`, `isbn`) VALUES ' + sql_values
         try:
             with self.__conn.cursor() as cursor:
@@ -69,11 +70,10 @@ class MyLibrary:
         '''
         Get top ten of most borrowed book
 
-        return:
-        list
+        Returns:
+            borrowed_book_list (list): returns a list of book data containg book ID , title, and times borrowed
         '''
         result = []
-        #sql = 'SELECT book_id, count(book_id) AS times_borrowed FROM borrowed_books GROUP BY book_id LIMIT 10; '
 
         sql = '''
             SELECT bk.book_id, bk.title AS book_title, bb.times_borrowed
@@ -100,11 +100,11 @@ class MyLibrary:
     def getUserWhoBorrowedTheMost(self):
         '''
         Return the details of the user who borrowed the most book
-        TODO:
-        Get the max times_borrowed
-        Search for the users that borrowed the same amount as max times_borrowed
+            Parameters:
+                None
             Returns:
-
+                user_details (list): a list of user data containing user ID, firstname, lastname, registration date
+                                     and times borrowed
         '''
         # sql = '''
         #     SELECT u.user_id, u.first_name, u.last_name, u.email, u.registration_date, bb.times_borrowed
@@ -128,15 +128,15 @@ class MyLibrary:
         try:
             with self.__conn.cursor() as cursor:
                 cursor.execute(sql)
-                user_detail = cursor.fetchall()
+                user_details = cursor.fetchall()
             
             print("User who borrowed most books:")
-            print(user_detail)
+            print(user_details)
         except Exception as e:
             print(e)
         finally:
             self.closeConnection()
-        return user_detail
+        return user_details
 
 
     def createIndexOnBooksPublicationYear(self):
