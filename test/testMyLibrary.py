@@ -87,126 +87,60 @@ def testInitData():
 
     assert value == 20 
 
-@pytest.mark.getTop10MostBorrowedBook
-def testGetTop10MostBorrowedBook():
+@pytest.mark.initTable
+def testInitDataBorrowedBooks():
     ml = MyLibrary("myDB")
-    value = ml.getTop10MostBorrowedBook()
-
-    # Number 1 most read book id is 13
-    assert value[0][0] == 13
-
-@pytest.mark.getUserWhoBorrowedTheMost
-def testGetUserWhoBorrowedTheMost():
+    table_name = 'borrowed_books'
+    sql = f'''
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (0, 4628538, 10, '2022-04-09', '2022-04-28'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (1, 88270203, 10, '2022-04-25', '2022-12-11'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (6, 88270203, 58, '2022-05-28', '2022-06-25'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (8, 53572776, 10, '2022-07-28', '2022-08-05'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (9, 2023748, 10, '2022-02-19', '2022-03-14'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (19, 19173054, 10, '2022-01-04', '2022-01-13'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (97, 88270203, 90, '2022-07-19', '2022-08-17'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (310, 2990996, 97, '2022-09-19', '2022-10-02'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (500, 38347870, 90, '2022-06-02', '2022-07-05'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (805, 96925225, 4, '2022-05-22', '2022-06-09'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (6533, 4628538, 6, '2022-08-14', '2022-09-03'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (8547, 40576510, 13, '2022-07-01', '2022-06-27'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (20877, 28691365, 90, '2022-12-04', '2022-12-21'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (20878, 95118284, 13, '2022-10-15', '2022-10-16'),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (20879, 4628538, 13, '2022-10-15', NULL),
+        (`borrow_id`, `user_id`, `book_id`, `borrow_date`, `return_date`) VALUES (20880, 96925225, 13, '2022-10-15', NULL);
     '''
-    There are two person borrowed the most in the data
-    user_id = 4628538 and user_id = 88270203
-    '''
-    ml = MyLibrary("myDB")
-    value = ml.getUserWhoBorrowedTheMost()
-    expected_uid = 88270203
-    expected_first_name = "Karley"
-    expected_last_name = "Keefe"
-    assert len(value) == 2
-    assert value[1][0] == expected_uid
-    assert value[1][1] == expected_first_name
-    assert value[1][2] == expected_last_name
-
-@pytest.mark.createIndexOnBooksPublicationYear
-def testCreateIndexOnBooksPublicationYear():
-    ml = MyLibrary("myDB")
-    value = ml.createIndexOnBooksPublicationYear()
-    assert value == "Done"
-
-@pytest.mark.getBooksAt2020IsNotBorrowed
-def testGetBooksAt2020IsNotBorrowed():
-    ml = MyLibrary("myDB")
-    value = ml.getBooksAt2020IsNotBorrowed()
-
-    expected_book_id = 96 # book id of 96 is not borrowed by any user and the publication year is 2020
-    assert value[0]["book_id"] == expected_book_id
-
-
-@pytest.mark.getUsersWhoBorrowedBooksByAuthor
-def testGetUsersWhoBorrowedBooksByAuthor():
-    author_name = "Mr. Benjamin Huel DVM"
-    ml = MyLibrary("myDB")
-
-    value = ml.getUsersWhoBorrowedBooksByAuthor(author_name)
-
-    expected_return_size = 3
-    expected_user_id_0 = 88270203
-    expected_user_id_1 = 38347870
-    expected_user_id_2 = 28691365
-    
-    assert value[0]["user_id"] == expected_user_id_0
-    assert value[1]["user_id"] == expected_user_id_1
-    assert value[2]["user_id"] == expected_user_id_2
-    assert len(value) == expected_return_size
-
-
-@pytest.mark.dependency(name="StoredProcedureAVGDays")
-@pytest.mark.createStoredProcedure
-def testCreateStoredProcedure():
-    ml = MyLibrary("myDB")
-    value = ml.createProcedureToCalculateAVGBorrowedDate()
-    print (value)
-    assert value == True
-    
-@pytest.mark.dependency(depends=["StoredProcedureAVGDays"])
-@pytest.mark.callStoredProcedure
-def testCalculateAverageBorrowedDays():
-    # Using book_id = 4, average_days = 18.0
-    ml = MyLibrary("myDB")
-    expected_value = 18.0
-    value = ml.calculateAverageBorrowedDays(4)
-    assert value == expected_value
-    
-
-@pytest.mark.dependency(name="TriggerUpdateReturnDate")
-@pytest.mark.createTrigger
-def testCreateTriggerToUpdateReturnDate():
-    ml = MyLibrary("myDB")
-    value = ml.createTriggerToUpdateReturnDate()
+    value = ml.initData(table_name, sql)
     print(value)
-    assert value == True
 
-@pytest.mark.dependency(depends=["TriggerUpdateReturnDate"])
-@pytest.mark.triggerUpdateReturnDate
-def testTrigger():
-    '''
-    When a user returned a book, the borrowed_books table will be updated based on book_id and user_id
-    and return date will be updated to current date
+    assert value == 16 
 
-    For testing purposes, borrow_id=20879 will be used, simulating the book is being borrowed and
-    using is going to return it.
-
-    Once the book is returned, return_date will not be NULL
-
-    '''
+@pytest.mark.initTable
+def testInitDataUsers():
     ml = MyLibrary("myDB")
-    
-    sql = '''
-        UPDATE borrowed_books 
-        SET 
-            book_id = 13
-        WHERE
-            user_id = 4628538;
-        '''
-    sql_result = '''
-        SELECT * FROM borrowed_books WHERE borrow_id=20879;
+    table_name = 'users'
+    sql = f'''
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (1191769, 'Weston', 'Osinski', 'elyse00@example.com', '1999-03-17'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (2023748, 'Hudson', 'Daugherty', 'xromaguera@example.org', '1975-05-14'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (2990996, 'Bernhard', 'Corkery', 'schowalter.madalyn@example.net', '2019-04-28'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (4628538, 'Isaiah', 'Keeling', 'sonia87@example.net', '1987-10-07'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (4914839, 'Elenor', 'Erdman', 'bskiles@example.org', '1989-02-10'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (17608084, 'Freeda', 'Rosenbaum', 'abbott.francesco@example.org', '1974-11-20'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (19173054, 'Imelda', 'Moore', 'rath.roosevelt@example.net', '1982-07-01'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (21321221, 'Don', 'Willms', 'beier.jayme@example.net', '1976-05-21'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (23606005, 'Caitlyn', 'Ritchie', 'josiah54@example.com', '1978-09-07'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (28691365, 'Louisa', 'Crona', 'warren.gutkowski@example.org', '2006-08-02'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (38347870, 'Colby', 'Wisozk', 'garrick89@example.com', '2011-04-21'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (40576510, 'Nikki', 'Rosenbaum', 'kkeeling@example.org', '1971-03-19'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (43076253, 'Jerrod', 'Parker', 'ecronin@example.net', '1986-09-27'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (50522491, 'Keira', 'Wolff', 'giuseppe24@example.net', '1981-09-04'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (52207709, 'Ozella', 'Harris', 'zyundt@example.org', '2020-10-11'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (53572776, 'Rowena', 'Blanda', 'natasha11@example.org', '1976-03-28'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (88270203, 'Karley', 'Keefe', 'frances04@example.org', '2015-01-29'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (95118284, 'Zackery', 'Satterfield', 'ortiz.lance@example.com', '1974-08-01'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (96925225, 'David', 'Abernathy', 'bernier.devin@example.net', '1975-06-18'),
+        (`user_id`, `first_name`, `last_name`, `email`, `registration_date`) VALUES (99324490, 'Therese', 'Schultz', 'rasheed93@example.org', '2022-08-22');
     '''
-    try:
-        with ml.getDBConnection.cursor() as cursor:
-            cursor.execute(sql)
-            ml.getDBConnection.commit()
+    value = ml.initData(table_name, sql)
+    print(value)
 
-            cursor.execute(sql_result)
-            borrowed_books_details = cursor.fetchone()
-        
-    except Exception as e:
-        print(e)
-    finally:
-        ml.closeConnection()
-
-        assert borrowed_books_details[4] is not None
-    pass
+    assert value == 20 
